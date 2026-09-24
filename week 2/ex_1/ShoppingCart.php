@@ -10,7 +10,7 @@ class ShoppingCart {
         }
         
         foreach ($items as $item) {
-            $this->addItems($item);
+            $this->addItem($item);
         }
     }
 
@@ -18,7 +18,7 @@ class ShoppingCart {
         return $this->items;
     }
 
-    public function addItems($item) {
+    public function addItem($item) {
         if (!self::isItemValid($item)) {
             throw new InvalidArgumentException('Item must be a CartItem object.');
         }
@@ -70,6 +70,28 @@ class ShoppingCart {
         }
 
         return $total;
+    }
+
+    public function displayCart() {
+        if ($this->isEmpty()) {
+            echo 'Cart is empty.<br>';
+            return;
+        }
+
+        echo '<table border="1" cellpadding="6">';
+        echo '<tr><th>Name</th><th>Price</th><th>Quantity</th><th>Total</th></tr>';
+
+        foreach ($this->items as $item) {
+            echo '<tr>';
+            echo '<td>' . htmlspecialchars($item->getName()) . '</td>';
+            echo '<td>' . number_format($item->getPrice()) . '</td>';
+            echo '<td>' . $item->getQuantity() . '</td>';
+            echo '<td>' . number_format($item->getTotal()) . '</td>';
+            echo '</tr>';
+        }
+
+        echo '<tr><th colspan="3">Cart total</th><th>' . number_format($this->calculateTotal()) . '</th></tr>';
+        echo '</table>';
     }
 
     public function getLength() {

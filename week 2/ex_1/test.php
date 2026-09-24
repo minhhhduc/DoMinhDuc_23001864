@@ -16,32 +16,32 @@ function testEmptyCart() {
     assertTest($cart->calculateTotal() === 0, 'An empty cart has a total of 0');
 }
 
-function testShoppingCartManagesCartItems() {
-    $cart = new ShoppingCart([
-        new CartItem('Keyboard', 50, 2),
-        new CartItem('Mouse', 25, 1),
-        new CartItem('Headset', 75, 3)
-    ]);
-
-    assertTest($cart->getLength() === 3, 'ShoppingCart manages CartItem objects');
-    assertTest($cart->getItem(0) instanceof CartItem, 'Cart items are CartItem objects');
-}
-
-function testAddCartItem() {
+function testRequiredCartFlow() {
     $cart = new ShoppingCart();
-    $cart->addItems(new CartItem('Keyboard', 50, 2));
-
-    assertTest($cart->getLength() === 1, 'addItems adds a CartItem to the cart');
-}
-
-function testCalculateTotal() {
-    $cart = new ShoppingCart([
+    $items = [
         new CartItem('Keyboard', 50, 2),
         new CartItem('Mouse', 25, 1),
-        new CartItem('Headset', 75, 3)
-    ]);
+        new CartItem('Headset', 75, 3),
+        new CartItem('Monitor', 200, 1)
+    ];
 
-    assertTest($cart->calculateTotal() === 350, 'calculateTotal gets each item total through CartItem::getTotal');
+    foreach ($items as $item) {
+        $cart->addItem($item);
+    }
+
+    assertTest($cart->getLength() === 4, 'ShoppingCart manages at least four CartItem objects');
+    assertTest($cart->getItem(0) instanceof CartItem, 'Cart items are CartItem objects');
+    assertTest($cart->calculateTotal() === 550, 'calculateTotal gets each item total through CartItem::getTotal');
+
+    echo '<h3>Cart before removing Mouse</h3>';
+    $cart->displayCart();
+
+    $cart->removeItem('Mouse');
+    assertTest($cart->getLength() === 3, 'removeItem removes an existing product');
+    assertTest($cart->calculateTotal() === 525, 'Cart total updates after removal');
+
+    echo '<h3>Cart after removing Mouse</h3>';
+    $cart->displayCart();
 }
 
 function testInvalidPrice() {
@@ -79,9 +79,7 @@ function testRemoveMissingItem() {
 
 try {
     testEmptyCart();
-    testShoppingCartManagesCartItems();
-    testAddCartItem();
-    testCalculateTotal();
+    testRequiredCartFlow();
     testInvalidPrice();
     testInvalidQuantity();
     testRemoveMissingItem();
