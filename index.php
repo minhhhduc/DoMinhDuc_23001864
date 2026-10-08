@@ -1,5 +1,5 @@
 <?php
 
-$exercise = './week 2/ex_1/test.php';
+$exercise = './week 4/app/index.php';
 require $exercise;
 ?>
