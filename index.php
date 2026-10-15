@@ -1,5 +1,4 @@
 <?php
 
-$exercise = './week 4/app/index.php';
-require $exercise;
-?>
+header('Location: week%205/app/index.php');
+exit;
