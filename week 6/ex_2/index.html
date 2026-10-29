@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Đặt vé xem phim</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app" class="page">
+    <h1>Đặt vé xem phim</h1>
+
+    <div class="layout">
+        <form class="card" @submit.prevent="submitBooking">
+            <h2>Thông tin đặt vé</h2>
+
+            <div class="field">
+                <label for="customerName">Họ tên khách hàng</label>
+                <input id="customerName" type="text" placeholder="Ví dụ: Nguyễn Văn An" v-model.trim="customerName">
+            </div>
+
+            <div class="field">
+                <label for="showtime">Suất chiếu</label>
+                <select id="showtime" v-model="showtime">
+                    <option v-for="option in showtimes" :key="option.value" :value="option.value">
+                        {{ option.label }}
+                    </option>
+                </select>
+            </div>
+
+            <div class="field">
+                <span class="group-label">Loại vé</span>
+                <div class="radios">
+                    <label class="radio-card" :class="{ 'is-checked': ticketType === 'standard' }">
+                        <input type="radio" value="standard" v-model="ticketType">
+                        Vé thường · 70.000 đ
+                    </label>
+                    <label class="radio-card" :class="{ 'is-checked': ticketType === 'vip' }">
+                        <input type="radio" value="vip" v-model="ticketType">
+                        Vé VIP · 100.000 đ
+                    </label>
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="quantity">Số lượng vé (1 – 10)</label>
+                <div class="qty">
+                    <button type="button" @click="decreaseQuantity" :disabled="quantity <= 1" aria-label="Giảm số lượng">−</button>
+                    <input id="quantity" type="number" min="1" max="10" step="1" v-model.number="quantity">
+                    <button type="button" @click="increaseQuantity" :disabled="quantity >= 10" aria-label="Tăng số lượng">+</button>
+                </div>
+                <p class="error">{{ quantityError }}</p>
+            </div>
+
+            <div class="field">
+                <label class="check">
+                    <input type="checkbox" v-model="popcornCombo">
+                    Combo bắp nước · 45.000 đ / đơn
+                </label>
+            </div>
+
+            <div class="actions">
+                <button type="submit" class="btn btn--primary" :disabled="!canSubmit">Đặt vé</button>
+                <button type="button" class="btn btn--ghost" @click="resetForm">Đặt lại</button>
+            </div>
+            <p class="note" v-if="!canSubmit">Nhập họ tên và số lượng vé hợp lệ để bật nút “Đặt vé”.</p>
+        </form>
+
+        <aside class="card summary">
+            <div class="movie">
+                <div class="poster">🎬</div>
+                <div>
+                    <div class="movie-name">Hành Trình Về Nhà</div>
+                    <div class="movie-meta">Phim tình cảm · 118 phút · P13</div>
+                </div>
+            </div>
+
+            <div class="line"><span>Suất chiếu</span><span>{{ showtimeLabel }}</span></div>
+            <div class="line"><span>Loại vé</span><span>{{ ticketTypeLabel }}</span></div>
+            <div class="line"><span>Đơn giá</span><span>{{ formatCurrency(unitPrice) }}</span></div>
+            <div class="line"><span>Số lượng</span><span>{{ isQuantityValid ? quantity : 0 }} vé</span></div>
+            <div class="line"><span>Combo bắp nước</span><span>{{ formatCurrency(comboFee) }}</span></div>
+
+            <div class="total">
+                <span>Tổng tiền</span>
+                <strong>{{ formatCurrency(totalPrice) }}</strong>
+            </div>
+
+            <div class="confirm" v-if="confirmation">
+                <h3>Đặt vé thành công</h3>
+                <p>Khách hàng: <strong>{{ confirmation.customerName }}</strong></p>
+                <p>Suất chiếu: {{ confirmation.showtimeLabel }}</p>
+                <p>Loại vé: {{ confirmation.ticketTypeLabel }} × {{ confirmation.quantity }}</p>
+                <p>Combo bắp nước: {{ confirmation.hasCombo ? 'Có' : 'Không' }}</p>
+                <p>Tổng tiền: <span class="money">{{ formatCurrency(confirmation.totalPrice) }}</span></p>
+            </div>
+        </aside>
+    </div>
+</div>
+
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

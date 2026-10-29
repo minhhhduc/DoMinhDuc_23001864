@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Quản lý công việc cá nhân</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app" class="page">
+    <h1>Quản lý công việc cá nhân</h1>
+
+    <div class="card">
+        <form class="add-form" @submit.prevent="addTask">
+            <input
+                type="text"
+                placeholder="Nhập công việc rồi nhấn Enter hoặc bấm Thêm"
+                v-model.trim="newTaskName"
+                @input="errorMessage = ''"
+                aria-label="Tên công việc mới">
+            <button type="submit" class="btn btn--primary">Thêm</button>
+        </form>
+        <p class="error">{{ errorMessage }}</p>
+
+        <div class="stats">
+            <span>Tổng số: <strong>{{ totalCount }}</strong></span>
+            <span>Chưa hoàn thành: <strong>{{ activeCount }}</strong></span>
+            <span>Đã hoàn thành: <strong>{{ completedCount }}</strong></span>
+        </div>
+
+        <div class="filters">
+            <button
+                v-for="option in filters"
+                :key="option.value"
+                type="button"
+                class="filter"
+                :class="{ 'is-active': activeFilter === option.value }"
+                @click="activeFilter = option.value">
+                {{ option.label }}
+            </button>
+        </div>
+
+        <ul class="list" v-if="filteredTasks.length">
+            <li
+                v-for="task in filteredTasks"
+                :key="task.id"
+                class="item"
+                :class="{ 'is-completed': task.completed }">
+                <input type="checkbox" v-model="task.completed" :aria-label="'Đánh dấu hoàn thành: ' + task.name">
+                <span class="item-name">{{ task.name }}</span>
+                <button type="button" class="delete" @click="removeTask(task.id)" :aria-label="'Xóa: ' + task.name">✕</button>
+            </li>
+        </ul>
+
+        <div class="empty" v-else>
+            <strong>{{ emptyState.title }}</strong>
+            <span>{{ emptyState.message }}</span>
+        </div>
+
+        <div class="footer">
+            <p>Còn {{ activeCount }} việc chưa hoàn thành.</p>
+            <button
+                type="button"
+                class="btn btn--ghost"
+                :disabled="completedCount === 0"
+                @click="clearCompleted">
+                Xóa các việc đã hoàn thành ({{ completedCount }})
+            </button>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Thẻ thông tin sinh viên</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app" class="page">
+    <h1>Thẻ thông tin sinh viên</h1>
+
+    <div class="card">
+        <img class="avatar" :src="avatarUrl" :alt="'Ảnh đại diện của ' + fullName">
+
+        <div class="info">
+            <h2>{{ fullName }}</h2>
+
+            <p class="row"><span class="label">Mã sinh viên:</span> {{ studentId }}</p>
+            <p class="row"><span class="label">Lớp:</span> <span v-text="studentClass"></span></p>
+            <p class="row">
+                <span class="label">Điểm trung bình:</span>
+                <strong>{{ formattedGpa }}</strong>
+            </p>
+            <p class="row">
+                <span class="label">Xếp loại:</span>
+                <span class="badge" :class="rankClass">{{ rankLabel }}</span>
+            </p>
+            <p class="row">
+                <span class="label">Trạng thái:</span>
+                <span v-if="isStudying" class="status status--active">Đang học</span>
+                <span v-else class="status status--stopped">Đã nghỉ</span>
+            </p>
+        </div>
+    </div>
+
+    <div class="panel">
+        <h3>Thay đổi dữ liệu để thấy giao diện tự cập nhật</h3>
+
+        <div class="field">
+            <label for="gpa">Điểm trung bình: {{ formattedGpa }}</label>
+            <input id="gpa" type="range" min="0" max="10" step="0.1" v-model.number="gpa">
+            <p class="hint">Kéo để đổi điểm: từ 8 trở lên là Giỏi, từ 6,5 là Khá, từ 5 là Trung bình, dưới 5 là Chưa đạt.</p>
+        </div>
+
+        <div class="field">
+            <label class="check">
+                <input type="checkbox" v-model="isStudying">
+                Sinh viên đang học
+            </label>
+        </div>
+
+        <div class="field">
+            <button type="button" class="btn" @click="showIntro = !showIntro">
+                {{ showIntro ? 'Ẩn giới thiệu' : 'Hiện giới thiệu' }}
+            </button>
+
+            <div class="intro" v-show="showIntro">
+                <p>Xin chào! Mình là <strong>{{ fullName }}</strong>, sinh viên lớp <strong v-text="studentClass"></strong>.</p>
+                <p>Mình đang học Vue.js và thích xây dựng giao diện web. Điểm trung bình hiện tại là {{ formattedGpa }}.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

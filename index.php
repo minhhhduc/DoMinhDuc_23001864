@@ -1,4 +1,4 @@
 <?php
 
-header('Location: midterm/ex1.php');
+header('Location: week%206/ex_1/index.html');
 exit;
