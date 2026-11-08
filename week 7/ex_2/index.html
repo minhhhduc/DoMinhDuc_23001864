@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Danh mục sản phẩm</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app" class="page" v-cloak>
+    <header class="page-head">
+        <div>
+            <h1>Danh mục sản phẩm</h1>
+        </div>
+
+        <div class="page-stats">
+            <span class="page-stat"><strong>{{ products.length }}</strong> sản phẩm</span>
+            <span class="page-stat page-stat--in"><strong>{{ inStockCount }}</strong> còn hàng</span>
+        </div>
+    </header>
+
+    <p v-if="purchaseMessage" class="notice" role="status">
+        <span>{{ purchaseMessage }}</span>
+        <button type="button" class="notice__close" aria-label="Đóng thông báo" @click="purchaseMessage = ''">
+            ×
+        </button>
+    </p>
+
+    <section class="product-grid" aria-label="Danh sách sản phẩm">
+        <the-san-pham
+            v-for="product in products"
+            :key="product.id"
+            :name="product.name"
+            :price="product.price"
+            :image="product.image"
+            :description="product.description"
+            :stock="product.stock"
+            @buy="handleBuy"
+        ></the-san-pham>
+    </section>
+</div>
+
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script src="components/constants.js"></script>
+<script src="components/formatters.js"></script>
+<script src="components/TheSanPham.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

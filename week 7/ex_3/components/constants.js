@@ -1,0 +1,2 @@
+const CART_QUANTITY_MIN = 1;
+const CART_QUANTITY_MAX = 99;

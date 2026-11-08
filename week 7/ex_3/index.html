@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Giỏ hàng</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app" class="page" v-cloak>
+    <header class="page-head">
+        <div>
+            <h1>Giỏ hàng</h1>
+        </div>
+        <span class="item-count">{{ cartItems.length }} sản phẩm</span>
+    </header>
+
+    <section class="cart-panel" aria-label="Danh sách sản phẩm trong giỏ">
+        <div v-if="cartItems.length > 0" class="cart-content">
+            <div class="cart-head" aria-hidden="true">
+                <span>Sản phẩm</span>
+                <span>Số lượng</span>
+                <span>Thành tiền</span>
+                <span></span>
+            </div>
+
+            <div class="cart-list">
+                <dong-gio-hang
+                    v-for="cartItem in cartItems"
+                    :key="cartItem.id"
+                    :item="cartItem"
+                    @doi-so-luong="handleQuantityChange"
+                    @yeu-cau-xoa="handleRemove"
+                ></dong-gio-hang>
+            </div>
+        </div>
+
+        <div v-else class="empty-cart">
+            <span class="empty-cart__icon" aria-hidden="true">🛒</span>
+            <h2>Giỏ hàng trống</h2>
+            <p>Bạn đã xóa hết sản phẩm khỏi giỏ hàng.</p>
+        </div>
+    </section>
+
+    <section class="cart-summary" aria-label="Tổng kết giỏ hàng">
+        <div class="summary-item">
+            <span class="summary-item__label">Tổng số lượng</span>
+            <strong class="summary-item__value">{{ totalQuantity }}</strong>
+        </div>
+        <div class="summary-item summary-item--total">
+            <span class="summary-item__label">Tổng tiền</span>
+            <strong class="summary-item__value">{{ formatPrice(totalAmount) }}</strong>
+        </div>
+    </section>
+</div>
+
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script src="components/constants.js"></script>
+<script src="components/formatters.js"></script>
+<script src="components/DongGioHang.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
