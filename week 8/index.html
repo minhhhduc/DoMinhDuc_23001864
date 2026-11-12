@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh sách sản phẩm</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+    <div class="page-head">
+        <h1>Danh sách sản phẩm</h1>
+        <button v-if="!showForm" class="btn-add" @click="openAddForm">+ Thêm sản phẩm</button>
+    </div>
+
+    <p v-if="message" class="message" :class="messageType">{{ message }}</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Tên sản phẩm</th>
+                <th>Đơn giá (đồng)</th>
+                <th>Số lượng tồn</th>
+                <th>Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="product in products" :key="product.id">
+                <td>{{ product.name }}</td>
+                <td>{{ product.price.toLocaleString('vi-VN') }}</td>
+                <td>{{ product.stock }}</td>
+                <td>
+                    <button @click="editProduct(product)">Sửa</button>
+                    <button @click="deleteProduct(product)">Xóa</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <section v-if="showForm" class="form-panel">
+        <h2>{{ editingId ? 'Sửa sản phẩm' : 'Thêm sản phẩm mới' }}</h2>
+        <form @submit.prevent="saveProduct" novalidate>
+            <div>
+                <label>Tên sản phẩm</label>
+                <input v-model.trim="form.name" type="text" maxlength="100" @input="formError = ''">
+            </div>
+            <div>
+                <label>Đơn giá</label>
+                <input v-model.number="form.price" type="number" min="1" @input="formError = ''">
+            </div>
+            <div>
+                <label>Số lượng tồn</label>
+                <input v-model.number="form.stock" type="number" min="0" @input="formError = ''">
+            </div>
+            <button type="submit">Lưu</button>
+            <button type="button" @click="resetForm">Hủy</button>
+            <p v-if="formError" class="form-error">{{ formError }}</p>
+        </form>
+    </section>
+</div>
+
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
