@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Câu 1 - Upload ảnh sản phẩm</title>
+    <link rel="stylesheet" href="styles/base.css">
+    <link rel="stylesheet" href="styles/table.css">
+    <link rel="stylesheet" href="styles/modal.css">
+</head>
+<body>
+<div id="app" v-cloak>
+    <div class="page-head" :inert="showForm">
+        <div>
+            <h1>Danh sách sản phẩm</h1>
+        </div>
+        <button v-if="!showForm" class="btn-add" type="button" @click="openAddForm">+ Thêm sản phẩm</button>
+    </div>
+
+    <p v-if="message" class="message" :class="messageType" :inert="showForm">{{ message }}</p>
+
+    <div class="table-wrap" :inert="showForm">
+        <table>
+            <thead>
+                <tr>
+                    <th>Ảnh</th>
+                    <th>Tên sản phẩm</th>
+                    <th>Đơn giá (đồng)</th>
+                    <th>Số lượng tồn</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-if="products.length === 0">
+                    <td colspan="5" class="empty">{{ loading ? 'Đang tải...' : 'Chưa có sản phẩm' }}</td>
+                </tr>
+                <template v-else>
+                    <tr v-for="product in products" :key="product.id">
+                        <td class="image-cell">
+                            <img v-if="product.image" :src="product.image" :alt="product.name" class="thumb" loading="lazy">
+                            <span v-else class="no-image">Chưa có ảnh</span>
+                        </td>
+                        <td>{{ product.name }}</td>
+                        <td class="price">{{ product.price.toLocaleString('vi-VN') }}</td>
+                        <td>{{ product.stock }}</td>
+                        <td class="actions">
+                            <button type="button" @click="editProduct(product)">Sửa</button>
+                            <button type="button" @click="deleteProduct(product)">Xóa</button>
+                        </td>
+                    </tr>
+                </template>
+            </tbody>
+        </table>
+    </div>
+
+    <div v-if="showForm" class="modal-backdrop">
+        <section class="modal-panel" role="dialog" aria-modal="true" :aria-label="editingId ? 'Sửa sản phẩm' : 'Thêm sản phẩm mới'">
+            <h2>{{ editingId ? 'Sửa sản phẩm' : 'Thêm sản phẩm mới' }}</h2>
+            <form @submit.prevent="saveProduct" novalidate>
+                <div class="form-row">
+                    <label for="product-name">Tên sản phẩm</label>
+                    <input id="product-name" ref="nameInput" v-model.trim="form.name" type="text" maxlength="100" @input="formError = ''">
+                </div>
+                <div class="form-row">
+                    <label for="product-price">Đơn giá</label>
+                    <input id="product-price" v-model.number="form.price" type="number" min="1" step="1" @input="formError = ''">
+                </div>
+                <div class="form-row">
+                    <label for="product-stock">Số lượng tồn</label>
+                    <input id="product-stock" v-model.number="form.stock" type="number" min="0" step="1" @input="formError = ''">
+                </div>
+                <div class="form-row form-row-image">
+                    <label for="product-image">Ảnh sản phẩm</label>
+                    <div class="image-input">
+                        <input
+                            id="product-image"
+                            ref="fileInput"
+                            type="file"
+                            accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+                            @change="onFileChange"
+                        >
+                        <p class="hint">Chấp nhận JPG, JPEG, PNG — tối đa 2 MB. Để trống để giữ ảnh hiện tại.</p>
+                        <div class="image-preview">
+                            <img v-if="previewSrc" :src="previewSrc" alt="Xem trước ảnh sản phẩm">
+                            <span v-else>Chưa có ảnh</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" :disabled="saving">{{ saving ? 'Đang lưu...' : 'Lưu' }}</button>
+                    <button type="button" :disabled="saving" @click="resetForm">Hủy</button>
+                </div>
+                <p v-if="formError" class="form-error">{{ formError }}</p>
+            </form>
+        </section>
+    </div>
+</div>
+
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
